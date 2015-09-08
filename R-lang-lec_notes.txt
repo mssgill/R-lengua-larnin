@@ -1,0 +1,387 @@
+
+Start: Sun Sep 6, 2015
+
+########################## R Lectures by Stuart Greenlee
+
+require(MASS)
+
+########### 5 - Pkgs
+getwd()
+setwd()
+
+########### 6 - Assigning Vars
+rm(var)
+ls()
+rm(list = ls() )
+
+########### 7 - Basic data types
+is.string, numeric, boolean
+as.string, numeric, boolean
+
+help or ?, ??
+
+typeof(var) 
+
+########### 8 - Workspace Ops
+example
+
+data()
+
+cars93
+
+datasets
+
+########### 9 - How to access files on disk
+
+Getting access to your files
+
+########### 10 - Basic ops
+
+*, /, ^ = **
+
+rounding()
+
+floor(), ceiling()
+
+cos(), sin(), tan()
+
+abs()
+
+log(), log10(), exp()
+
+factorial()
+
+************ 11 - Assigning vecs
+
+--- Declare vec
+
+vec = c(#,#,#) etc.  -- c stands for combine
+
+vec = 1:5 or 4:8  etc.
+
+or 1.5:5.5, iterates by 1
+
+--- Objs in vec
+
+vec[1] is obj #1
+
+vec[1:4] is obj 1 through 4
+
+vec[-1]  all but obj 1
+vec[-3]  all but obj 3
+vec[-(1:3)] all but objs 1 to 3
+
+--- Combining vecs together
+
+vec = c(vec1,vec2, scalar, 1:5, -4:-3) --> all work
+
+length(vec) returns the size
+
+--- String vec, boolean vec
+
+char_vec = c(string1, string2...)
+
+boovec = c(T,T,F...)
+
+--- Combining vecs of dif types
+
+They combine into a vec of strings
+
+--- Ops on vecs
+
+vec*2 works
+
+vec+10 adds 10 to each elt
+
+vec^2 squares each obj
+
+can do ops on vecs, *if* they are the same size
+
+
+************ 12 - Sequences
+
+seq(from = #, to = #, by = #), and the nums can be decimals and negative
+
+can do boolean comparisons too, e.g. seq(5) == 1:5, and same with vectors
+
+all( seq(5) == 1:5 ) --> rets true if all are true, only
+
+rep(1,5) --> repeats 1 exactly 5 times
+
+rep (c(1:3) , 5 ) --> will repeat the vec 1,2,3 now 5 times
+
+
+************** 13 - Basic stat'l functs
+
+sum(vec) --> sums it up
+
+min,max,range  --> as expected, and can combine vecs in the args, too
+
+range also has elts 1 and 2, give the min and max themselves
+
+mean, median -> the avg
+
+mad ---> mean something..
+
+var = variance
+
+sd = standev
+
+Ok, now to e.g. test if 68% of a vec falls within one standev, you can do this:
+
+lowerbound = mean(vec) - sd(vec)
+upperbound = mean(vec) + sd(vec)
+
+boolvec that says if an elt is within one standev:
+
+boolvec = (vec > lowerbound)  & (vec < upperbound)
+
+sum(boolvec) --> only sums the true vals of the boolvec, and should give ~68% for any dist
+
+cor(vec1, vec2) --> corrln
+
+cov --> covariance
+
+table --> shows freq of vals inside of a vec
+
+
+
+************** 14 - Matrices
+
+assign as so: matrix(c(3,5,234,1),nrow=2,ncol=4)
+
+t(mat) = transpose
+
+dim(mat) = dimns
+
+t(vec) = transpose of a vec
+
+amat[r,c] is the r'th element of the row, c'th elt of the column
+
+amat[1,] is all stuff in row 1
+amat[,1] is all stuff in col 1
+
+You can assign just nrows or ncols and it will divide # of elts by the
+one you give, and then assign the other the result of this division.  Interesting.
+
+newmat = amat(c(2,4),] --> this will take the 2nd and 4th rows of amat, and put them into newmat
+
+diag(4) = diagonal mat of 1's along main diag
+
+You can do the normal mult, divide, sqrt etc. functs as normal
+
+Can do ops on 2 mats if they have same dimns
+
+dim(amat)[1] --> is num rows, same as nrow funct
+dim(amat)[2] --> is num cols, same as ncol funct
+
+Doing amat == bmat will return a boolean in each location, doing
+all(amat==bmat) will return a single bool of true for if each elt
+matches.
+
+
+************** 15 - Matrix Ops
+
+---> My first cxample script: see mat_ops_Exx_CityTemps.R
+
+paste funct concats strings together
+
+cbind, rbind -- adding cols or rows to a mat
+
+
+c(matrix) will uncurl the mat into a linear array of just the elts,
+then you can do length on it and check vs. dimns etc.
+
+
+
+************** 16 - Basic Matrix Stats
+
+min,max,range,sd
+rowMeans
+colMeans
+apply(mat, 1 or 2, FUN = sd)
+cor(mat) 
+summary
+summary(t(mat))
+
+************** 17 - Random nums
+
+random uniform: runif(numRandoms, startval, endval) 
+set.seed(int) -- to replicate same sequence
+
+sample( set, numvals, replace=T or F) # set can be e.g. 1:10 or a mat
+or a vec you've created, and numvals is how many vals to pick from
+that set, replace says if i can draw the same value again
+
+sum(sample ...) will sum it up
+
+state.name # All the US states
+
+s = sample(1:5,1000,replace = T,prob = c(0.1,0.2,0.3,0.1,0.0001)) ; table(s) # The prob is how often to draw that val, and the sum does *not* have to be 1, it renorms all probs to get the right vals
+
+rnorm(numvals, mean, sd)  # Default: mean = 0, sd of 1 -- Gaussian dist
+
+************** 18 - String functs
+
+substr(str, start, end) # str can be a vec of strings too
+
+paste(str1, str2,...,strN, sep = '') # pastes together -- sep defaults
+to one blank space
+
+# Can do paste to vec of strings too
+
+grep(searchstr, strvec, value = T or F) # Will return which locations
+of the strvec the searchstr occurs in; value is by default F, but if T
+it will return the strings at those locations
+
+strsplit(str, substr to split on)
+
+sub( substr to search and replace for, substr to sub in, the orig str)  # First occurrence subst
+
+gsub( substr to search and replace for, substr to sub in, the orig str) # Global subst
+
+************** 19 - Times and dates
+
+Sys.Date()
+Sys.time()
+
+seq(as.POSIXct("2015-08-15"), as.POSIXct("2015-08-20"), by = 'hour')
+
+difftime
+
+
+************** 20 - line plots
+
+xg = rnorm(1000)
+xu = runif(1000)
+csum = cumsum(xg)
+
+plot(xg)
+
+plot(xu,type='CHAR', col = 'COLORNAME', ylim = c(MINVAL, MAXVAL)) # We
+have l=line, p = point (default), h = histo, o = lines and points, s =
+steps, COLORNAME = blue, red, green, cyan,
+
+lines( newplotinfo ) will just add to the plot already made
+
+# Can use cbind on vecs too, useful to get the limits, and rowMeans
+  will work on this obj too
+
+points( otherinfo ) 
+
+
+
+************** 21 - Plotting args
+
+lines( newplotinfo , ylim = range(data), lty = NUM, lwd = LINEWIDTH,
+main = TITLE, xlab = X-AXIS LABEL, ylab = Y-AXIS LABEL ) # NUM can be
+1, solid, 2, 3 etc. ; LINEWIDTH = 1 by default, can make smaller or
+larger
+
+
+
+************** 22 - Bar graphs and histos
+
+barplot
+hist
+rchi
+as.matrix
+
+
+************** 23 - Scatterplots
+
+head(DATASET) - gives the info in the header lines
+attach(DATASET) - tells R that this is the dataset we're about to use
+plot(x=DATA1, y=DATA2)
+abline(lm(DATA1~DATA2) ) # Does the regression fit, and plots it
+abline(h = horiz maxline, v = vert maxline)
+pairs(~Weight+Price+~MPG.city) # Will do scatter plots of all 3 of these vs. each other
+
+
+
+dotchart # Can put labels on etc. -- this one is a bit unclear
+
+orderCars = Cars93[order(MPG.city), ] # Ordergs by MPG, but by nothing elxe
+
+cex = how large to make the labels
+
+
+************** 24 - Prob plots
+
+# These are not well-explained, but one gets the rough idea of how well 2 dists match
+qqnorm
+qqline 
+qqplot
+scaled
+rchisq
+
+************** 25 - Combining and saving plots
+
+par(mfrow=c(2,2)) # Makes plots in 2x2 format
+
+plot(x=DATA1 , y = DATA2)
+
+
+R-ploggers website talks about par and margin function
+
+save plots as pdf, or png etc.
+
+layout(matrix(c(1,2,1,3), ncol = 2, nrow = 2, byrow=T))
+
+
+************** 26 - Arrays
+
+x = 1:9
+ ax=array(x)
+ attributes(ax)
+$dim
+
+ attributes(ax)$dim
+ ax=array(x,dim=c(3,3))
+ attributes(ax)$dim
+
+ax=array(x,dim=c(3,2,2)) # This is 2 3x2 arrays
+
+ax[1:2, 2, ] = 42 # Assign 42 into both rows 1 and 2, second col, both arrays
+
+# Arrays can of course be any number of dimns
+
+
+************** 27 - Lists
+
+# Declare three vecs of dif types, lengths etc.
+x = list(nums,strs, bools)
+
+x[[2]][1] gives the first elt of vec 2 in the list etc.
+
+x = list("numname"=nums,"strname"=strs, "bool-list"=bools)
+
+Can get the vec by:
+
+x$numname
+
+attach(x)
+
+numname will give that
+
+detach(x) # Opposite of attach
+
+unlist(x) # Creates vec of strings of each obj -- collapses it
+
+
+newx = c(x, "sysdate" = as.character(Sys.Date() ) ) # Add another vec to the list
+
+
+
+************** 28 - Data Frames
+
+...
+
+************** 29 - Reading in Data 
+
+...
+
+************** 30 - Missing data elts
+
+...
+
