@@ -1,5 +1,8 @@
 Cur: 9/8/2015
 
+# R-lengua-larnin
+My learning of R through examples and lectures
+
 ------------------- Contents
 
 - R-lang-lec_notes.txt -- main file i'm keeping the notes
