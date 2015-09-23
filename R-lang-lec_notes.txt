@@ -152,7 +152,7 @@ assign as so: matrix(c(3,5,234,1),nrow=2,ncol=4)
 
 t(mat) = transpose
 
-dim(mat) = dimns
+dim(mat) = dimns of any mat
 
 t(vec) = transpose of a vec
 
@@ -260,7 +260,7 @@ plot(xg)
 
 plot(xu,type='CHAR', col = 'COLORNAME', ylim = c(MINVAL, MAXVAL)) # We
 have l=line, p = point (default), h = histo, o = lines and points, s =
-steps, COLORNAME = blue, red, green, cyan,
+steps, COLORNAME = blue, red, green, cyan -- type must be in quotes
 
 lines( newplotinfo ) will just add to the plot already made
 
@@ -360,13 +360,13 @@ Can get the vec by:
 
 x$numname
 
-attach(x)
+attach(x) --> then you can use just "numname" vs. x$numname
 
 numname will give that
 
 detach(x) # Opposite of attach
 
-unlist(x) # Creates vec of strings of each obj -- collapses it
+unlist(x) # Creates vec of strings of each obj -- collapses it.  Will make strs by default if there are any other types of objs in the list.
 
 
 newx = c(x, "sysdate" = as.character(Sys.Date() ) ) # Add another vec to the list
@@ -375,13 +375,220 @@ newx = c(x, "sysdate" = as.character(Sys.Date() ) ) # Add another vec to the lis
 
 ************** 28 - Data Frames
 
-...
+cities = c("city1", "city2", "city3")
+
+pop = c(1000,2000,4000)
+
+avghigh = c(55,65,75)
+contiguousUS = c(T,T,F)
+
+citydata = data.frame(cities,pop, avghigh,contiguousUS)
+
+
+- Doing:
+
+attributes(citydata)
+
+  will give row and column names
+
+
+Dataframes have stringsAsFactors defaulting to true, can set it to F if needed
+
+- Factors are some kind of lists too, i think (?)
+
+-  To get a basic overview of what's in the data:
+  
+str(citydata) will give what the types of the data are in citydata
+
+summary(citydata) gives dif info, with avgs etc.
+
+
+require(MASS)
+
+class(Cars93)  -- tells us data type
+
+str(Cars93) - gives us all the info on the various parts of the data
+
+summary(Cars93$Cylinders) -- will give the freq table of the cars with that many cylinders
+
+--- make a:
+vec,
+mat,
+dataframe
+
+-- Functs that convert between data types:
+
+-as.char, as.numeric, as.logical -- from before
+
+- also: as.list, as.data.frame
+
+Can then unlist things too.
+
+
 
 ************** 29 - Reading in Data 
 
-...
+I made a file on disk called testfile.csv with just this:
+
+trial, mass, velocity
+a, 10, 13
+b, 53, 52
+a, 51, 88.2
+
+-- readcsv funct:
+
+t = read.csv('testfile.csv') -- will read it in and assume first line is header for column names by default
+
+t = read.csv('testfile.csv', header=F) -- will force it not to do this, and call cols V1, V2 etc.
+
+class(t$trial) - will give a factor
+class(t$mass) - will give an integer
+class(t$velocity) - will give a numeric, meaning float
+
+-- If i instead read in the file as so:
+
+t = read.csv('testfile.csv', stringsAsFactors = F)
+
+  then
+
+class(t$trial) - will give a char
+
+-- Doing:
+
+t = read.table('testfile.csv')  will read it in as char strs -- note this needs space between the dif elts!  Won't work with just commas.  Note that header defaults to F for this funct!!!
+
+t = read.table('testfile.csv', header = T, sep = ',') will make it use the commas as sep vars, so i's flexible
+
 
 ************** 30 - Missing data elts
 
-...
+-- Made the weights.txt file:
+
+wt.ht.gender
+100.71.m
+.66.f
+220.68.
+160.74.f
+199..m
+
+-- And read it in with:
+
+w = read.table('weights.txt', header = T, sep = '.')
+
+-- Then the output looked like:
+
+   wt ht gender
+1 100 71      m
+2  NA 66      f
+3 220 68       
+4 160 74      f
+5 199 NA      m
+
+So missing numerics were filled in with NA, and strings with a space.
+
+-- Now use the is.na funct on this:
+
+is.na(w)
+        wt    ht gender
+[1,] FALSE FALSE  FALSE
+[2,]  TRUE FALSE  FALSE
+[3,] FALSE FALSE  FALSE
+[4,] FALSE FALSE  FALSE
+[5,] FALSE  TRUE  FALSE
+
+Note the str isn't F because a space is a real str
+
+Can also test by e.g. is.na(w[1,1])
+
+And can assign NA in by w[1,2] = NA -- has to be capital
+
+-- If you try e.g.
+
+attach(w)
+
+  then
+  
+mean(ht) -- you'll get an NA because there are NA's in there
+
+  but you can do
+
+mean(na.omit(ht)) -- and you'll get an answer
+
+  doing
+
+na.omit(ht)  -- will show you which vals it's using
+
+  you can also use this syntax to do the same:
+  
+mean(ht, na.rm=T)
+
+  Doing it on the full dataset:
+  
+na.omit(w) -- will cut out any row that has an NA anywhere
+
+  Doing:
+
+complete.cases(w)  -- will give a bool with T only for the rows that have no NA's
+
+  If we want to make the dataset that has only full rows, do:
+  
+completedata = w[complete.cases(w),] -- note the end comma is needed because we have to specify we need the full row for all those cases
+
+
+************** 31 - Missing data elts #2
+
+This has some more advanced methods of filling in missing numbers, but
+apparently i can't load the xts pkg via:
+
+  require(xts)
+
+so i can't do it.  If i could, i could use:
+
+  na.locf
+
+which fills with a const line from the last val.  Or i could use a more advanced:
+
+   fill function
+
+which goes from the last value to the next value by a sloped line.
+
+There are also 2 functs:
+
+  is.nan
+
+  is.infinite
+
+which can be useful for checking vals.
+
+
+************** 32 - Ordering data
+
+First load up some data:
+
+  data("petrol")
+
+Get info on what the cols are:
+
+  ?petrol
+  
+Change col names to something more useful:
+
+  names(petrol)=c('id','specgraph', 'vaporpress','volcrude', 'volgas','percentcrude')
+
+Order the rows by one col:
+
+  order(vaporpress)
+
+Order the whole dataset by this way:
+
+  newpetroldat = petrol[order(vaporpress),] -- note comma at end for saying order by row
+
+Can also order by 2 or more cols, if the first index is the same, and can do it in increasing or decreasing order depending on flag:
+  
+  petrol[order(vaporpress,volgas, decreasing = T),]
+
+
+If you want to reorder cols alphabetically:
+
+  newdat = petrol[,order(names(petrol))]
 
