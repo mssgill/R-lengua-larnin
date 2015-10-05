@@ -296,7 +296,7 @@ as.matrix
 
 ************** 23 - Scatterplots
 
-head(DATASET) - gives the info in the header lines
+head(DATASET) - gives the info in the first few lines
 attach(DATASET) - tells R that this is the dataset we're about to use
 plot(x=DATA1, y=DATA2)
 abline(lm(DATA1~DATA2) ) # Does the regression fit, and plots it

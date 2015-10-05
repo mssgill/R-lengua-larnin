@@ -1,0 +1,36 @@
+
+mm=read.csv("/Users/m/mozmed/intakeUsageData/mac_jt_071515_sendgrid_events_9-23-15.csv")
+
+
+datestamp=as.POSIXct(as.numeric(email),origin="1970-01-01")
+
+plot(datestamp,id)
+
+
+
+---- responsetypeVsclinic --
+
+where is: delivered?
+
+who sends bounces the most?
+
+--- Ones that matter:
+proc'd
+delivered
+bounced
+
+Buncke name
+
+open
+click
+
+chart-type
+colors
+
+Did they start or finish
+
+invites delivered
+
+do it by week, and overlay them
+
+
