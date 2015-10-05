@@ -179,6 +179,12 @@ Doing amat == bmat will return a boolean in each location, doing
 all(amat==bmat) will return a single bool of true for if each elt
 matches.
 
+---- Extra from web:  http://stackoverflow.com/questions/11995832/inverse-of-matrix-in-r
+ http://statmethods.net/advstats/matrix.html
+
+ - m1 %*% m2 is the matrix mult of these 2 mats
+
+ - i = solve(m1) gives somehow the inverse of matrix m1
 
 ************** 15 - Matrix Ops
 
@@ -201,7 +207,7 @@ rowMeans
 colMeans
 apply(mat, 1 or 2, FUN = sd)
 cor(mat) 
-summary
+summary  ---- gives you basic stats on any mat or dataset
 summary(t(mat))
 
 ************** 17 - Random nums
@@ -457,7 +463,7 @@ class(t$trial) - will give a char
 
 t = read.table('testfile.csv')  will read it in as char strs -- note this needs space between the dif elts!  Won't work with just commas.  Note that header defaults to F for this funct!!!
 
-t = read.table('testfile.csv', header = T, sep = ',') will make it use the commas as sep vars, so i's flexible
+t = read.table('testfile.csv', header = T, sep = ',') will make it use the commas as sep vars, so it's flexible
 
 
 ************** 30 - Missing data elts
@@ -534,7 +540,12 @@ complete.cases(w)  -- will give a bool with T only for the rows that have no NA'
   
 completedata = w[complete.cases(w),] -- note the end comma is needed because we have to specify we need the full row for all those cases
 
+  Doing
 
+any.(is.na(dataset))
+
+  Will tell you if there is anything missing in any line of the dataset.
+  
 ************** 31 - Missing data elts #2
 
 This has some more advanced methods of filling in missing numbers, but
@@ -591,4 +602,314 @@ Can also order by 2 or more cols, if the first index is the same, and can do it 
 If you want to reorder cols alphabetically:
 
   newdat = petrol[,order(names(petrol))]
+
+
+************** 33 - Making subsets of data
+
+- Take a dataset like cars = Cars93
+
+ - Then:
+
+   mt = cars[,c("Model","Type"]  gives just those 2 cols, and a new dataset assigned to that
+
+Also:
+
+  mt = cars[,c(2,5)]  will do the same because i know the col #'s
+
+-----------> This lec is incomplete, audio stops 1/3 of the way through
+
+
+
+   
+************** 35 - Merge and match functions
+
+Define some city as so:
+
+cityinfo =data.frame(
+   city=I(c('Chitown', 'Seatac')),
+   state=I(c('IL','WA'))
+   )
+
+
+then some weather info:
+
+
+wthrinfo = data.frame(
+   city=I(c('Chitown', 'Seatac', 'SF')),
+   avghi = c(90,60,50)                    ---------- Note the c is req'd here to make the vec
+   )
+
+
+the "I" means don't make this a factor, just a str, and you can use single quotes as above, or double.
+
+
+Then use:
+
+  indexes = match(cityinfo$city,wthrinfo$city)
+
+to get a vector of the indices that match those cities, like [1,2]
+
+Now if you do
+
+  cityinfo$city[indexes]
+
+It will show those cities that match, and similarly for:
+
+   wthrinfo$city[indexes]
+
+BUT if you do:
+
+   wthrinfo[indexes]
+
+It'll show all row -- i don't fully get this.
+
+You can also use this syntax:
+
+  cityinfo$city %in%    wthrinfo$city
+
+To get a boolean vec to see which rows of the first are in the second -- it'll have the exact number of rows of the first arg, then whether that row exists in the second
+
+Now doing a merge:
+
+  mergeddat = merge(cityinfo,wthrinfo,by.x="city",by.y="city")
+
+Will check see which of the col names of the x dataset (the first) and
+the y (second) match, and then only keep those in the resulting
+mergeddat dataset.
+
+Because there are matching column names in this case you can also use just do:
+
+    mergeddat = merge(cityinfo,wthrinfo)
+
+And it will give you the same result.
+
+If you try to do a merge on two datasets with no common names, it will
+make it nrow1 * nrow2 long, since it won't know how to match on any
+specific column.
+
+Some indexing stuff, if wthrinfo is a 4x2 matrix:
+
+  wthrinfo[,0:2]  --- gives all rows, and cols 0 to 2
+  wthrinfo[,0:2]  --- gives rows 0 to 2, and all cols 
+
+Adding a row:
+
+  wthrinfo = rbind(c("Reno",100),wthrinfo)   --- Note you need the c() notation, otw it messes up
+ 
+Will add a row with the new info to the table.
+
+
+************** 36 -  Descriptive Stats
+
+Use the built-in iris dataset, and use the
+
+  summary -- basic states
+  is.na   -- anything missing?
+  head    -- first few lines
+  tail    -- last few lines
+  names -- col names
+  dim   -- dimns
+  
+Functs to describe the basic dataset.
+
+Now, use:
+
+  isplit = split(iris,iris$Species)
+
+Will give a list of 3 components based on the 3 species, and you can get each via:
+
+  isplit$versicolor   etc. --- you can tab-complete after $ sign to see which ones
+  
+   
+Now plot some stuff up:
+
+  plot(iris$Petal.Length,iris$Petal.Width,col=ifelse(iris$Species=="setosa",'blue',ifelse(iris$Species=="versicolor",'green','red')))
+
+Plots the 3 dif iris species separately in dif colors, depending on
+their type.  Note i've mixed up single and double quotes there in that
+ifelse, and it's all ok.
+
+Now use corrln function.
+
+  cor(iris[,0:4])
+
+Can only look at corrs between num'l columns.
+
+To do the 't-test':
+
+  t.test(iris$Sepal.Length,iris$Petal.Length)
+
+If t is high, and p is low, it means the avgs are well separated --
+they don't see much else.
+
+
+************** 37 - Using the apply funct
+
+Using apply funct:
+
+  apply(data, num, FUN = max) --- num = 1 for rows, 2 for cols.
+
+FUN can also be: min, range, sd.
+
+You can also use an apply funct across lists:
+
+  lapply(isplit,summary)
+
+And there is sapply, and other apply functs -- do this:
+
+   ??base::apply
+
+To get the several dif types of apply one can use.
+
+
+************** 38 - Linear models
+
+Some stuff with the cars dataset:
+
+ attach(Cars93)
+
+ lm(formula = Weight ~ MPG.city + EngineSize)
+
+Then with the irises one:
+
+Have to first set up the plot:
+
+  plot(Petal.Length,Petal.Width)
+
+Then fit it, and note how the vars are inverted from above:
+
+  abline(lm(Petal.Width~Petal.Length))
+
+Can get stats on the fit, which aren't totally obvious:
+
+  summary(lm(Petal.Length~Petal.Width+0))
+
+************** 39 - Doing some real linear regression (Extracting LinMod info)
+
+
+summary(lm(Petal.Length~Petal.Width+0))
+
+ plot(resid(fitmod))
+
+Fit one thing vs. another:
+
+    fitmod = lm(Weight~MPG.city)
+    
+Fit several things:
+
+  fitmod = lm(Weight~MPG.city+EngineSize+Passengers)
+
+
+Plot the fitted val of a var VS the orig value in the dataset:
+
+  plot(Weight,fitmod$fitted.values,type='p',col='green')
+
+Plot an x=y line:
+
+  abline(c(1,1))
+
+Syntax here is not obvious to me, as variations don't do as expected..
+
+Now split dataset into a training and fitting one, starting as so:
+
+  trainingsetIndices=sample(1:nrow(Cars93),size=round(nrow(Cars93)*0.50))
+
+This will *randomly* pick 50% of the lines, not the first half.
+
+Now define the training data set from these indices, then the one we want to fit on by the inverse of it:
+
+  trainingCars =Cars93[trainingsetIndices,]
+  fitcars = Cars93[-trainingsetIndices,]
+
+Now make the fit on the data set:
+
+  fitweights = predict(fitmod,newdata = fitcars)
+
+Pull out the true orig wts using the indices:
+
+  trueweights = Cars93$Weight[-trainingsetIndices]
+
+Take the dif of the two:
+
+  wterrs = fitweights - trueweights
+
+Can show this as a funct of index:
+
+  plot(wterrs)
+
+Can then get the RMSE of the training set:
+
+   rmseTrainingSet = sqrt(mean(fitmod$residuals^2))
+
+And of the fitted set:
+
+  rmseFitted = sqrt(mean(wterrs^2))
+
+And as expected, the former is smaller than the latter:
+
+ rmseTrainingSet
+   175.7989
+ rmseFitted
+   283.0032
+
+Phew!
+
+
+
+************** 40 - PCA
+
+prcomp
+biplot
+
+************** 41 - XTS = Extensible Time Series
+
+Installed: xts
+
+require(xts)
+
+lag
+x = xts(rnorm(20),order.by = Sys.Date()-20:1)
+
+Timezones
+
+diff
+
+.... Really weird and unclear what they're even trying to do.
+
+************** 42 - XTS and ACF objects
+
+
+------------------ Another failed file, stops playing about a qrtr way through
+
+************** 43 - More about time
+
+Johnson and Johnson 1960 earnings
+
+stl funct
+
+s.window
+
+------------------ Another failed file
+
+************** 44 ------------------ Another failed file
+
+************** 45,46,47 - not there
+
+
+************** 48 - For loops ----> looks good
+
+************** 49 - While loops ----> looks good
+
+************** 50 - Appending loops ----> looks good
+
+************** 51 - not there
+
+
+************** 52 - Debug funct ----> looks good
+
+************** 53 - Recursive funct ----> looks good
+
+************** 54 - Saving dif file types ----> looks good
+
+************** 55 - Additional resources ----> looks good
 
