@@ -1,3 +1,156 @@
+https://github.com/MozartMedical/jtree/blob/standalone/database/jtreedb.sql
+
+------------ 10-8-2015 
+
+-- Notes on 10-07-2015 files
+
+- Summary stats about our user base (that are acquired through Intake)
+
+  - age dist
+  - gender dist
+  - location dist
+  - break down by clinic
+  - how much info is in the profiles
+  - e.g. how many conditions are they filling out
+  - only choose people who claimed invites - they will have a tree
+
+How many patients who fill in conditions have some nonzero value in there, how many have zero?
+
+And what are the conditions?  How does it compare to our list of 'top 20'?
+
+Domain name analysis.
+
+------------ Users
+
+CREATE TABLE `users` (
+x  `userid` bigint(20)
+x  `email` varchar(100),
+x  `isenabled` tinyint(4) NOT NULL DEFAULT '1',   // 0 = not validated email, 1 = validated
+  `register_date` datetime DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `val_key` varchar(50) DEFAULT 'none',
+  `isautomail` tinyint(4) NOT NULL DEFAULT '1',
+x  `type` tinyint(4) NOT NULL DEFAULT '0',      // 0 = famtree user, 1 = admin, 2 = intake user
+  `temail` varchar(100) DEFAULT NULL,
+
+----------- Nodes
+
+CREATE TABLE `nodes` (
+  `nodeid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) NOT NULL,
+x  `userid` bigint(20) unsigned NOT NULL DEFAULT '0', // Only nonzero when a node has been claimed
+  `familyid` bigint(20) DEFAULT NULL,
+  `isvoided` tinyint(1) NOT NULL DEFAULT '0',         // If node is "deleted"
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `isinvitee` tinyint(1) NOT NULL DEFAULT '0',  // Flag
+  `gender` varchar(10) DEFAULT NULL,            // "True" gender -- if they have changed it, will be here.  Birth sex according to *user*.
+  `birthdate` varchar(30) DEFAULT NULL,         // Birthyr
+  `isliving` tinyint(4) DEFAULT '1',
+  `deathdate` varchar(30) DEFAULT NULL,         // Deathyr
+  `email` varchar(100) DEFAULT NULL,
+  `website` varchar(150) DEFAULT NULL,
+  `hometel` varchar(20) DEFAULT NULL,
+  `mobile` varchar(20) DEFAULT NULL,
+  `birthplace` varchar(150) DEFAULT NULL,
+  `deathplace` varchar(150) DEFAULT NULL,
+  `profession` varchar(150) DEFAULT NULL,
+  `company` varchar(150) DEFAULT NULL,
+  `interests` varchar(150) DEFAULT NULL,
+  `bionotes` varchar(300) DEFAULT NULL,
+  `photo` varchar(200) DEFAULT NULL,
+  `leftpos` int(11) DEFAULT NULL,
+  `toppos` int(11) DEFAULT NULL,
+  `elementid` varchar(50) DEFAULT NULL,
+  `isauthor` tinyint(4) NOT NULL DEFAULT '0',
+x  `conditions` text NOT NULL,                  // Conditions the user has put in, in a long JSON string.  No medical conditions will put a special value in this field.
+  `causeofdeath` varchar(1000) DEFAULT NULL,
+
+
+------------ IntakeInvites
+
+CREATE TABLE `intakeinvites` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(36) NOT NULL,
+  `template_name` varchar(10) NOT NULL,
+  `sender_orgid` varchar(20) NOT NULL,
+  `sender_userid` bigint(20) NOT NULL,
+  `sender_name` varchar(100) NOT NULL,
+  `receiver_gender` varchar(7) NOT NULL,
+  `receiver_email` varchar(100) NOT NULL,
+  `appt_datetime` datetime DEFAULT NULL,
+  `appt_location` varchar(100) DEFAULT NULL,
+  `appt_provider` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `sent_at` datetime DEFAULT NULL,
+  `claimed_at` datetime DEFAULT NULL,
+  `invalidated_at` datetime DEFAULT NULL,
+  `sg_event_name` varchar(20) DEFAULT NULL,
+  `sg_event_at` datetime DEFAULT NULL,
+  `notes` text,
+  `bounced` tinyint(1) DEFAULT '0',
+
+Conversion rates - how often is it:
+ Bounced
+ Stay Unclaimed
+ Claimed 
+ How long till it's claimed?
+
+
+---------------- Userforms
+
+CREATE TABLE `userforms` (
+  `formid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) NOT NULL CHECK (`type` in ('risk', 'intake')),
+  `orgid` varchar(20) NOT NULL,
+  `userid` bigint(20) unsigned NOT NULL,
+  `formdata` text NULL,
+x  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+x  `iscomplete` tinyint(1) NOT NULL DEFAULT '0',
+x  `submitted_at` datetime DEFAULT NULL,
+  `viewtoken` char(36) NULL,
+  `isarchived` tinyint(1) NOT NULL DEFAULT '0',
+
+Of those who claimed, how long did it take till they submitted?  (completed)  This is generally rounded to e.g. hours.
+
+
+---------------- SendgridEvents
+
+CREATE TABLE `sendgrid_events` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `event` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `timestamp` bigint(20) unsigned NOT NULL,
+  `sender_orgid` varchar(20) DEFAULT NULL,
+  `template_name` varchar(20) DEFAULT NULL,
+  `template_type` varchar(20) DEFAULT NULL,
+  `invite_uuid` varchar(36) DEFAULT NULL,
+  `data` text,
+  `notified` tinyint(1) DEFAULT '0',
+
+Prob not as useful of a table, but maybe..
+
+Could maybe do an analysis of which domains bounce the most (e.g. hotmail vs. gmail).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------
 
 mm=read.csv("/Users/m/mozmed/intakeUsageData/mac_jt_071515_sendgrid_events_9-23-15.csv")
 
