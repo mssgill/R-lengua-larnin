@@ -6,13 +6,13 @@ https://github.com/MozartMedical/jtree/blob/standalone/database/jtreedb.sql
 
 - Summary stats about our user base (that are acquired through Intake)
 
-  - age dist
-  - gender dist
+  - age dist  - bin the birthyr
+
   - location dist
   - break down by clinic
   - how much info is in the profiles
   - e.g. how many conditions are they filling out
-  - only choose people who claimed invites - they will have a tree
+
 
 How many patients who fill in conditions have some nonzero value in there, how many have zero?
 
@@ -44,7 +44,7 @@ x  `userid` bigint(20) unsigned NOT NULL DEFAULT '0', // Only nonzero when a nod
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `isinvitee` tinyint(1) NOT NULL DEFAULT '0',  // Flag
   `gender` varchar(10) DEFAULT NULL,            // "True" gender -- if they have changed it, will be here.  Birth sex according to *user*.
-  `birthdate` varchar(30) DEFAULT NULL,         // Birthyr
+x  `birthdate` varchar(30) DEFAULT NULL,         // Birthyr
   `isliving` tinyint(4) DEFAULT '1',
   `deathdate` varchar(30) DEFAULT NULL,         // Deathyr
   `email` varchar(100) DEFAULT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE `intakeinvites` (
   `uuid` varchar(36) NOT NULL,
   `template_name` varchar(10) NOT NULL,
   `sender_orgid` varchar(20) NOT NULL,
-  `sender_userid` bigint(20) NOT NULL,
+ x `sender_userid` bigint(20) NOT NULL,
   `sender_name` varchar(100) NOT NULL,
   `receiver_gender` varchar(7) NOT NULL,
   `receiver_email` varchar(100) NOT NULL,
@@ -81,20 +81,13 @@ CREATE TABLE `intakeinvites` (
   `appt_location` varchar(100) DEFAULT NULL,
   `appt_provider` varchar(50) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `sent_at` datetime DEFAULT NULL,
-  `claimed_at` datetime DEFAULT NULL,
+ x `sent_at` datetime DEFAULT NULL,
+ x `claimed_at` datetime DEFAULT NULL,
   `invalidated_at` datetime DEFAULT NULL,
   `sg_event_name` varchar(20) DEFAULT NULL,
   `sg_event_at` datetime DEFAULT NULL,
   `notes` text,
-  `bounced` tinyint(1) DEFAULT '0',
-
-Conversion rates - how often is it:
- Bounced
- Stay Unclaimed
- Claimed 
- How long till it's claimed?
-
+x  `bounced` tinyint(1) DEFAULT '0',
 
 ---------------- Userforms
 
