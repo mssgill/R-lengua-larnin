@@ -1,4 +1,44 @@
-4442455272286002688
+
+------ sent
+
+[409] "2015-10-06 22:33:00 PDT" "2015-10-01 18:46:00 PDT" "2015-10-07 17:34:00 PDT"
+
+------- claimed
+[409] "2015-10-07 14:53:00 PDT" "2015-10-07 18:21:00 PDT" "2015-10-07 19:33:00 PDT"
+
+- clm - sent (hrs)
+
+[409]   16.3333333333333321491  143.5833333333333428072    1.9833333333333333925
+
+------- submitted
+[409] "2015-10-07 16:12:00 PDT" NA                        NA                       
+
+- sub - sent (hrs)
+[409]   0.294166666666666687391                        NA                        NA
+
+- sub - clm (hrs)
+[409]     1.3166666666666666519                        NA                        NA
+
+--------- appt
+[409] "2015-10-26 13:30:00 PDT" "2015-11-05 09:15:00 PST" "2015-10-12 09:00:00 PDT"
+
+- appt - sent (hrs)
+
+[409]  470.94999999999998863  831.48333333333334849  111.43333333333333712
+
+- appt - clm (hrs)
+
+[409]  7.5769444444444440379 11.4649999999999998579  1.8241666666666667140
+
+- appt - sub (hrs)
+
+[409]   7.55499999999999971578                       NA                       NA
+
+
+------------------> *what* is going on with the appt times difs with the claim and submitted times.  I'm not getting this at all.
+
+Next: percentage plots.
+
 
 https://github.com/MozartMedical/jtree/blob/standalone/database/jtreedb.sql
 

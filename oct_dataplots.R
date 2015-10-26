@@ -5,7 +5,7 @@
 ## Set up for one row, 2 cols in the plot
 par(mfrow=c(1,2))
 
-readdat = 1 # If we need to read in the data
+# readdat = 1 # If we need to read in the data
 readdat = 0
 
 if (readdat == 1) {
@@ -36,7 +36,7 @@ if (plottype == 'invites'){
 }
 
  plottype = 'nodes'  # To plot stuff from nodes dataset -- Like famID number
-   plottype = 'none'
+  plottype = 'none'
 if (plottype == 'nodes'){
   mm = mn
   
@@ -47,8 +47,7 @@ if (plottype == 'nodes'){
   mm2 = mm[mm$familyid > 1e18,] # Subset that has only those members with famID > 1e18
   }
 
- 
-plottype = 'users'  # To plot stuff from users dataset -- Like usertype: 0 = famtree, 1 = Admin, 2 = from invites
+ plottype = 'users'  # To plot stuff from users dataset -- Like usertype: 0 = famtree, 1 = Admin, 2 = from invites
   plottype = 'none'
 if (plottype == 'users'){
 
@@ -77,6 +76,7 @@ if (plottype == 'merged'){
   pie(freq,col=rainbow(10))
   pie(freq,col=rainbow(10),labels = pctlabels)
 
+  hist(mdi$birthyear, col='green', xlab = 'Birth Year', ylab='Number', main='Birth Year Distribution')
   hist(mdi$birthyear, col='green', xlab = 'Birth Year', ylab='Number', main='Birth Year Distribution')
   
   ######## Birth year
@@ -197,20 +197,23 @@ if (plottype == 'claimtimes'){
 
   ############################ Make plots of merged userforms and invites table -- like conversion rate info
  plottype = 'completedforms'  
-#  plottype = 'none'
+  plottype = 'none'
  if (plottype == 'completedforms'){
- 
-   ############### Get the merged dataset
-    {   mi$rid = as.numeric(as.character(mi$receiver_userid))  # This will give: Warning message:
-   # In eval(expr, envir, enclos) : NAs introduced by coercion -- from the Nulls when converted (i believe)
+ #  par(mfrow=c(1,2))
    
+   ############### Get the merged dataset
+     if (1==0) {
+    mi$rid = as.numeric(as.character(mi$receiver_userid))  # This will give: Warning message:
+   # In eval(expr, envir, enclos) : NAs introduced by coercion -- from the Nulls when converted (i believe)
+   # But is needed to properly do the merge in the next line, by converting a factor to a double
+    
    mergeddat = merge(muf,mi,by.x="userid",by.y="rid")  
    mufi= mergeddat
-   mdi = mufi[mufi$type == 'intake' && mufi$iscomplete == 1,]  # Pick only intake users -- note ending comma
-   md = mdi
+   md = mufi[mufi$type == 'intake' ,]  # Pick only intake users -- note ending comma
+   mdcomplete = mufi[mufi$type == 'intake' && mufi$iscomplete == 1,]  # Pick only intake users -- note ending comma
      dim(md)                # How many in this table 
 }  
-    ############# Get difs in sent, claim, submission times
+    ############## Get difs in sent, claim, submission times and put into vars
      if (1==0)  {   # Get the sent times into a vector of timedate objs
    senttimes =  md$sent_at                # Get sent times
    senttimesStr = as.character(senttimes) # Convert this list to strs
@@ -229,24 +232,27 @@ if (plottype == 'claimtimes'){
    subtimesAstime = strptime(subtimesStr, format="%m/%d/%y %H:%M")
    
    # Do same for appt date-time
-   appttimes = mi$appt_datetime
+   appttimes = md$appt_datetime
    appttimesStr = as.character(appttimes)
    appttimesAstime = strptime(appttimesStr, format="%m/%d/%y %H:%M")
      }
-    ################ Plot claimTimes - sentTimes
+    ############ Plot claimTimes - sentTimes
      if (1==0)  { # Now take the dif -- because they are both timedate objs, the minus operator gives the time dif back in seconds
    td = (clmtimesAstime - senttimesAstime) / 3600 # Divide by 3600 to get hrs
    hrtimes = (as.numeric(na.omit(td))/24)        # Omit the NA's (non-claimed ones), and convert to hours and real nums
    hrtimes = (hrtimes[hrtimes >0])  # Pick stuff that is only in the first hr
+   hrhist$density = cumsum(hrhist$counts)/sum(hrhist$counts)*100
    hrhist = hist(hrtimes, main="Claim Times Minus Sent Times", 
-                 xlab="Time Dif (hours)", ylab = "Number", col='red')                            # Histogram this
+                 xlab="Time Dif (hours)", ylab = "Number", col='red')  
+   plot(hrhist,freq=F)
+   # Histogram this
    firsthrTimes = (hrtimes[hrtimes < 1])  # Pick stuff that is only in the first hr
    firsthrTimes = (firsthrTimes[firsthrTimes >0])  # Pick stuff that is only in the first hr
    fhrhist = hist(firsthrTimes, 
                   main="Claim Times Minus Sent Times -- First Hour",
                   xlab="Time Dif (hours)", ylab = "Number", col='purple')                      # Histogram this
    }
-    ################ Plot submissionTimes - claimTimes 
+    ############ Plot submissionTimes - claimTimes 
      if (1==0)  {  # Now take the dif -- because they are both timedate objs, the minus operator gives the time dif back in seconds
    td = ( subtimesAstime - clmtimesAstime) / 3600 # Divide by 3600 to get hrs
    hrtimes = (as.numeric(na.omit(td))/24)        # Omit the NA's (non-claimed ones), and convert to hours and real nums
@@ -258,8 +264,8 @@ if (plottype == 'claimtimes'){
    fhrhist = hist(firsthrTimes, main="Claim Times Minus Submission Times -- First Hour",
                   xlab="Time Dif (hours)", ylab = "Number", col='lightgreen')                      # Histogram this
  } 
-     ################ Plot apptTimes - claimTimes 
-     if (1==1)  {     # Now take the dif -- because they are both timedate objs, the minus operator gives the time dif back in seconds
+    ############ Plot apptTimes - claimTimes 
+     if (1==0)  {     # Now take the dif -- because they are both timedate objs, the minus operator gives the time dif back in seconds
    td = (appttimesAstime - clmtimesAstime) / 3600 # Divide by 3600 to get hrs
    hrtimes = (as.numeric(na.omit(td))/24)        # Omit the NA's (non-claimed ones), and convert to hours and real nums
    hrtimes = (hrtimes[hrtimes >0])  # Pick stuff that is only in the first hr
@@ -278,4 +284,31 @@ if (plottype == 'claimtimes'){
    plot(fhrhist)
 }  
 
-}
+   ############ Plot %claimed vs. (apptTimes - sentTimes) 
+   if (1==1)  {# Now take the dif -- because they are both timedate objs, the minus operator gives the time dif back in seconds
+     td = (appttimesAstime - senttimesAstime) / 3600 # Divide by 3600 to get hrs
+     hrtimes = (as.numeric(na.omit(td))/24)        # Omit the NA's (non-claimed ones), and convert to hours and real nums
+     hrtimes = (hrtimes[hrtimes >0])  # Pick stuff that is only in the first hr
+     hrhist = hist(hrtimes ,main="Appt Times Minus Sent Times", 
+                   xlab="Time Dif (hours)", ylab = "Number", col = 'blue')                              # Histogram this
+     firsthrTimes = (hrtimes[hrtimes < 1 ])  # Pick stuff that is only in the first hr
+ #    firsthrTimes = (firsthrTimes[firsthrTimes >0])  # Pick stuff that is only in the first hr
+     fhrhist = hist(firsthrTimes, main="Appt Times Minus Sent Times -- First hr", 
+                    xlab="Time Dif (hours)", ylab = "Number", col = 'blue')                      # Histogram this
+     
+     # To plot histos of the cume sums over the time period
+    # hrhist$counts = cumsum(hrhist$counts)
+    # fhrhist$counts = cumsum(fhrhist$counts)
+     
+     plot(hrhist)
+     plot(fhrhist)
+     
+     hrhist$density = cumsum(hrhist$counts)/sum(hrhist$counts)*100
+     plot(hrhist,freq=F)
+     
+     fhrhist$density = cumsum(fhrhist$counts)/sum(fhrhist$counts)*100
+     plot(fhrhist,freq=F)
+     
+   }  
+   
+} # End
