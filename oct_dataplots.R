@@ -9,14 +9,15 @@ par(mfrow=c(1,2))
 readdat = 0
 
 if (readdat == 1) {
-## Invites table
- mi=read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.intakeinvites.cleaned.csv")
+  ## User table -- note i force the userID col to be read in as a string, because it's an 18 digit int and will be read wrong otherwise
+  mu = read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.users.cleaned.csv",  colClasses = c(userid='character'))
+  
+  ## Invites table
+ mi=read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.intakeinvites.cleaned.csv",  colClasses = c(receiver_userid='character'))
 
 ## Nodes table
- mn=read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.nodes.cleaned.csv")
+ mn=read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.nodes.cleaned.csv", colClasses = c(userid='character'))
 
-## User table
- mu = read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.users.cleaned.csv")
 
 ## Userforms table
 muf = read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.userforms.cleaned.csv")
@@ -99,6 +100,10 @@ if (plottype == 'merged'){
   
   }
 
+  
+  
+  
+  
   #### Make plots from invites table
 plottype = 'claimtimes'  # To plot stuff from invites dataset -- Like conversion rate info
   plottype = 'none'
@@ -195,6 +200,13 @@ if (plottype == 'claimtimes'){
   
   }
 
+  
+  
+  
+  
+  
+  
+  
   ############################ Make plots of merged userforms and invites table -- like conversion rate info
  plottype = 'completedforms'  
   plottype = 'none'
@@ -215,27 +227,7 @@ if (plottype == 'claimtimes'){
 }  
     ############## Get difs in sent, claim, submission times and put into vars
      if (1==0)  {   # Get the sent times into a vector of timedate objs
-   senttimes =  md$sent_at                # Get sent times
-   senttimesStr = as.character(senttimes) # Convert this list to strs
-   senttimesAstime = strptime(senttimesStr, format="%m/%d/%y %H:%M") # This is what converts the string into an
-   # actual datetime obj, the strptime function takes the str however it has been
-   # formatted, and you tell it the form in quotes. %H stands for hours in 24-hr format, %M is minutes.
-   
-   # Do same for claimed times
-   clmtimes = md$claimed_at
-   clmtimesStr = as.character(clmtimes)
-   clmtimesAstime = strptime(clmtimesStr, format="%m/%d/%y %H:%M")
-   
-   # Do same for claimed times
-   subtimes = md$submitted_at
-   subtimesStr = as.character(subtimes)
-   subtimesAstime = strptime(subtimesStr, format="%m/%d/%y %H:%M")
-   
-   # Do same for appt date-time
-   appttimes = md$appt_datetime
-   appttimesStr = as.character(appttimes)
-   appttimesAstime = strptime(appttimesStr, format="%m/%d/%y %H:%M")
-     }
+      }
     ############ Plot claimTimes - sentTimes
      if (1==0)  { # Now take the dif -- because they are both timedate objs, the minus operator gives the time dif back in seconds
    td = (clmtimesAstime - senttimesAstime) / 3600 # Divide by 3600 to get hrs

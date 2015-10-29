@@ -913,3 +913,12 @@ s.window
 
 ************** 55 - Additional resources ----> looks good
 
+
+----------- Other useful cmds
+
+---- Strings
+
+nchar(str) will give you the number of chars in the string
+
+
+hi Dad- i just had a mozzarella, basil, tomato hot sandwich here at Kaffa Cafe (old Paddy's), very delicious!  And a Oreo frappucino, too.  love,M

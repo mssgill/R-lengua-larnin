@@ -41,7 +41,9 @@ if (plottype == 'claimtimes'){
   clmtimes = mi$claimed_at
   clmtimesStr = as.character(clmtimes)
   clmtimesAstime = strptime(clmtimesStr, format="%m/%d/%y %H:%M")
-}  
+
+  
+  }  
   # Now take the dif, and plot as histos
 {
   td = (clmtimesAstime - senttimesAstime) / 3600 # Divide by 3600 to get hrs
