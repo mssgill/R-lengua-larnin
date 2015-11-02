@@ -37,10 +37,7 @@
 
 ------------------> *what* is going on with the appt times difs with the claim and submitted times.  I'm not getting this at all.
 
-Next: percentage plots.
 
-
-https://github.com/MozartMedical/jtree/blob/standalone/database/jtreedb.sql
 
 ------------ 10-8-2015 
 

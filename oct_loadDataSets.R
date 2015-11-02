@@ -21,4 +21,7 @@ if (readdat == 1) {
   ## Userforms table
   muf = read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.userforms.cleaned.csv" ,  colClasses = c(userid='character') )
   
+  ## Sendgrid table
+  ms = read.csv("/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/10-07-15.sendgrid_events.cleaned.csv" ,  colClasses = c(userid='character') )
+  
 }

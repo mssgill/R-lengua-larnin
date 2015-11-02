@@ -5,10 +5,9 @@
 ## Set up for one row, 2 cols in the plot
 par(mfrow=c(1,2))
 
+######### Load up the needed data files
 readdat = 1 # If we need to read in the data
 # readdat = 0
-
-######### Load up the needed data files
 path="/Users/m/mozmed/language_R_AndDataAnalysisCourse/R-lengua-larnin/"
 loadcode = paste(path, "oct_loadDataSets.R", sep='')
 if (readdat == 1) source(loadcode)
@@ -47,17 +46,25 @@ if (plottype == 'merged'){
   
 }
   
-########### Merge userforms and invites tables 
+########### Invites to completed funnel yields
 if (plottype == 'merged'){
     
-  mi$rid = as.character(mi$receiver_userid)  # This will give: Warning message:
-  # In eval(expr, envir, enclos) : NAs introduced by coercion -- from the Nulls when converted (i believe)
-  # But is needed to properly do the merge in the next line, by converting a factor to a double
-  
+  mi$rid = as.character(mi$receiver_userid)  
   mergeddat = merge(muf,mi,by.x="userid",by.y="rid")  
   mufi= mergeddat
   md = mufi[mufi$type == 'intake' ,]  # Pick only intake users -- note ending comma
   mdcomplete = mufi[mufi$type == 'intake' && mufi$iscomplete == 1,]  # Pick only intake users -- note ending comma
   dim(md)                # How many in this table 
   
+  ## Numbers for the funnel:
+  
+  dim(mi)                           # Invited
+  table(mufi$claimed_at != "NULL")  # Claimed
+  table(mufi$submitted_at != "NULL") # Submitted
+  table(mufi$iscomplete)            # Complete
 } # End
+  
+###########  Number of invites sent
+  { 
+  h=hist(table((ms$invite_uuid[ms$template_type=='invite' & ms$event=='delivered' & ms$email!='support@mozart.md'])  ),breaks=5,col='green', main="Number of invites sent")
+  }

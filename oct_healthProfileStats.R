@@ -46,11 +46,11 @@ if (plottype == 'merged'){
   ######## Birth year
   {
   byear = mdi$birthyear[mdi$birthyear < 2010]
-  byear = mdi$birthyear
+#  byear = mdi$birthyear
   
     totnum = length(byear)
   histname =paste("Birth Year before 2010: N = ",as.character(totnum))
-  plot(hist(byear), main=histname, xlab="Birth Year", ylab = "Number", col='lawngreen')
+  plot(hist(byear), main=histname, xlab="Birth Year", ylab = "Number", col='lawngreen', bins=20)
   }
   
 } # End
