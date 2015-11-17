@@ -101,9 +101,6 @@ if (plottype == 'merged'){
   }
 
   
-  
-  
-  
   #### Make plots from invites table
 plottype = 'claimtimes'  # To plot stuff from invites dataset -- Like conversion rate info
   plottype = 'none'
@@ -200,11 +197,6 @@ if (plottype == 'claimtimes'){
   
   }
 
-  
-  
-  
-  
-  
   
   
   ############################ Make plots of merged userforms and invites table -- like conversion rate info
